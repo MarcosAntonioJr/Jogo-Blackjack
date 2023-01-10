@@ -12,6 +12,11 @@ namespace ConsoleApp5
         {
             var jogoService = new JogoService();
             jogoService.Baralho();
+            jogoService.Embaralhar();
+            jogoService.CriarJogadores();
+            jogoService.DistribuirCartas();
+            Console.ReadKey();
+
         }
     }
 }
