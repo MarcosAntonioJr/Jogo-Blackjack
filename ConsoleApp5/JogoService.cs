@@ -11,7 +11,8 @@ namespace ConsoleApp5
     {
 
         public List<Carta> cartas = new List<Carta>();
-        public List<Jogadores> usuarios = new List<Jogadores>();
+        public List<Jogadores> jogadores = new List<Jogadores>();
+
 
         public void Baralho()
         {
@@ -63,66 +64,90 @@ namespace ConsoleApp5
             int numeroJogadores = int.Parse(Console.ReadLine());
             for (int i = 0; i < numeroJogadores; i++)
             {
-                usuarios.Add(new Jogadores());
+                jogadores.Add(new Jogadores());
                 Console.WriteLine("Digite o nome do jogador  " + (i + 1));
-                usuarios[i].Nome = Console.ReadLine();
+                jogadores[i].Nome = Console.ReadLine();
             }
 
         }
         public void DistribuirCartas()
         {
-            foreach (var jogador in usuarios)
+            foreach (var jogador in jogadores)
             {
+
+                jogador.Cartas = new List<Carta>();
                 for (int i = 0; i < 2; i++)
                 {
-                    jogador.Cartas = new List<Carta>();
                     jogador.Cartas.Add(cartas[i]);
-                    jogador.Pontuacao = cartas[i].Valor;
-                    jogador.Cartas.Add(cartas[i + 1]);
-                    jogador.Pontuacao += cartas[i + 1].Valor;
                     cartas.RemoveAt(i);
-                    cartas.RemoveAt(i+ 1);
-                    Console.WriteLine(jogador.Nome + ": " + jogador.Cartas[i].Nome + jogador.Cartas[i].Naipe + jogador.Pontuacao);
+                    Console.WriteLine(jogador.Nome + ": " + jogador.Cartas[i].Nome + jogador.Cartas[i].Naipe + jogador.PontuacaoComputada);
                 }
             }
         }
-
         public void Jogar()
         {
-            while (true)
-            {
-                foreach (var jogador in usuarios)
-                {
+            Baralho();
+            Embaralhar();
+            CriarJogadores();
+            DistribuirCartas();
 
+            while (jogadores.Count > 0)
+            {
+                for (int i = 0; i < jogadores.Count; i++)
+                {
+                    var jogador = jogadores[i];
+                    Console.WriteLine("Cartas de " + jogador.Nome + ": ");
+
+                    foreach (var carta in jogador.Cartas)
+                    {
+                        Console.WriteLine(carta.Nome + " de " + carta.Naipe);
+                    }
+                    Console.WriteLine("Pontuação: " + jogador.PontuacaoComputada);
+                    {
+                        if (jogador.PontuacaoComputada < 21)
+                        {
+                            Console.WriteLine("É a vez do jogador " + jogador.Nome);
+                            Console.WriteLine("Você quer mais uma carta? (s/n)");
+                            string escolha = Console.ReadLine();
+
+                            if (escolha == "s")
+                            {
+                                Carta novaCarta = cartas[0];
+                                jogador.Cartas.Add(novaCarta);
+                                cartas.RemoveAt(0);
+                                Console.WriteLine("O jogador " + jogador.Nome + " recebeu a carta" + novaCarta.Nome + " de " + novaCarta.Naipe);
+                            }
+                            //else if (jogador.PontuacaoComputada > 21 ) 
+                            //{
+                            //    Console.WriteLine("O jogador " + jogador.Nome + "ultrapassou 21 pontos.");
+                            //    continue;
+                            //}
+                            
+                            else if (escolha == "n")
+                            {
+                                Console.WriteLine("O jogador " + jogador.Nome + " decidiu parar com " + jogador.PontuacaoComputada + " pontos.");
+                                break;
+                            }
+                        }
+                    }
                 }
             }
+            VerificarVencedor();
         }
-
-
+        public void VerificarVencedor() 
+        {
+            var vencedor = jogadores[1];
+            foreach(var jogador in jogadores) 
+            {
+                if(jogador.PontuacaoComputada <= 21 && jogador.PontuacaoComputada > vencedor.PontuacaoComputada) 
+                {
+                    vencedor = jogador;
+                }
+            }
+            Console.WriteLine("O vencedor é: " + vencedor.Nome + " com " + vencedor.PontuacaoComputada + " pontos.");
+        }
     }
 }
-
-
-
-//public void PedirCarta()
-//{
-//    Carta.Add(cartas);
-//    Pontuacao += carta.Valor;
-//}
-//public void Parar()
-//{
-//    if (Pontuacao > 21)
-//    {
-//        Console.WriteLine("Você perdeu");
-//    }
-//    else if (Pontuacao == 21)
-//    {
-//        Console.WriteLine("Você ganhou");
-//    }
-//    else
-//    {
-//        Console.WriteLine("A rodada terminou");
-//    }
 
 
 

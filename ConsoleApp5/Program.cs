@@ -11,12 +11,9 @@ namespace ConsoleApp5
         static void Main(string[] args)
         {
             var jogoService = new JogoService();
-            jogoService.Baralho();
-            jogoService.Embaralhar();
-            jogoService.CriarJogadores();
-            jogoService.DistribuirCartas();
+            jogoService.Jogar();
             Console.ReadKey();
-
+            
         }
     }
 }
