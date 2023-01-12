@@ -10,17 +10,6 @@ namespace ConsoleApp5
     {
         public string Nome { get; set; }
         public List<Carta> Cartas { get; set; }
-        
-        public int PontuacaoComputada 
-        {
-            get 
-            {
-
-                {
-                    return Cartas.Sum(x => x.Valor);
-                }
-
-            }
-        }
+        public int PontuacaoComputada { get => Cartas.Sum(x => x.Valor); }
     }
 }

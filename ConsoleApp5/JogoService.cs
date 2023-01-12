@@ -42,7 +42,7 @@ namespace ConsoleApp5
                 foreach (var item in nomeValor)
                 {
                     cartas.Add(new Carta { Nome = item.Key, Naipe = naipe[i], Valor = item.Value });
-                    //Console.WriteLine("Nome: " + cartas[cont].Nome + " | " + "Naipe: " + cartas[cont].Naipe + " | " + "Valor: " + cartas[cont].Valor);
+                    //Console.WriteLine( cartas[cont].Nome + " De " + cartas[cont].Naipe + " | " + "Valor: " + cartas[cont].Valor);
                     cont++;
                 }
             }
@@ -80,7 +80,7 @@ namespace ConsoleApp5
                 {
                     jogador.Cartas.Add(cartas[i]);
                     cartas.RemoveAt(i);
-                    Console.WriteLine(jogador.Nome + ": " + jogador.Cartas[i].Nome + jogador.Cartas[i].Naipe + jogador.PontuacaoComputada);
+                    Console.WriteLine(jogador.Nome + ": " + jogador.Cartas[i].Nome + " de " + jogador.Cartas[i].Naipe);
                 }
             }
         }
@@ -91,66 +91,70 @@ namespace ConsoleApp5
             CriarJogadores();
             DistribuirCartas();
 
-            while (jogadores.Count > 0)
+            foreach (var jogador in jogadores)
             {
-                for (int i = 0; i < jogadores.Count; i++)
+                string escolha = String.Empty;
+                do
                 {
-                    var jogador = jogadores[i];
-                    Console.WriteLine("Cartas de " + jogador.Nome + ": ");
-
-                    foreach (var carta in jogador.Cartas)
+                    if (jogador.PontuacaoComputada > 21)
                     {
-                        Console.WriteLine(carta.Nome + " de " + carta.Naipe);
+                        Console.WriteLine("O jogador " + jogador.Nome + " ultrapassou a pontuação.");
+                        break;
                     }
-                    Console.WriteLine("Pontuação: " + jogador.PontuacaoComputada);
+                    else if (jogador.PontuacaoComputada == 21)
                     {
-                        if (jogador.PontuacaoComputada < 21)
-                        {
-                            Console.WriteLine("É a vez do jogador " + jogador.Nome);
-                            Console.WriteLine("Você quer mais uma carta? (s/n)");
-                            string escolha = Console.ReadLine();
-
-                            if (escolha == "s")
-                            {
-                                Carta novaCarta = cartas[0];
-                                jogador.Cartas.Add(novaCarta);
-                                cartas.RemoveAt(0);
-                                Console.WriteLine("O jogador " + jogador.Nome + " recebeu a carta" + novaCarta.Nome + " de " + novaCarta.Naipe);
-                            }
-                            //else if (jogador.PontuacaoComputada > 21 ) 
-                            //{
-                            //    Console.WriteLine("O jogador " + jogador.Nome + "ultrapassou 21 pontos.");
-                            //    continue;
-                            //}
-                            
-                            else if (escolha == "n")
-                            {
-                                Console.WriteLine("O jogador " + jogador.Nome + " decidiu parar com " + jogador.PontuacaoComputada + " pontos.");
-                                break;
-                            }
-                        }
+                        Console.WriteLine("O jogador " + jogador.Nome + " atingiu 21 pontos e venceu.");
+                        return;
+                        break;
                     }
-                }
+                    Console.WriteLine("-------------------------------------------------------------------");
+                    Console.WriteLine("Pontuação de " + jogador.Nome + ": " + jogador.PontuacaoComputada);
+                    Console.WriteLine("-------------------------------------------------------------------");
+                    Console.WriteLine("É a vez do jogador " + jogador.Nome);
+                    Console.WriteLine("Você quer mais uma carta? (s/n)");
+                    escolha = Console.ReadLine();
+                    if (escolha == "s")
+                    {
+                        Carta novaCarta = cartas[0];
+                        jogador.Cartas.Add(novaCarta);
+                        cartas.RemoveAt(0);
+                        Console.WriteLine("O jogador " + jogador.Nome + " recebeu a carta " + novaCarta.Nome + " de " + novaCarta.Naipe);
+                        Console.WriteLine("Nova pontuação: " + jogador.PontuacaoComputada);
+                    }
+                } while (escolha == "s");
+                if (escolha == "n")
+                    Console.WriteLine("O jogador " + jogador.Nome + " decidiu parar com " + jogador.PontuacaoComputada + " pontos.");
             }
             VerificarVencedor();
         }
-        public void VerificarVencedor() 
+        public void VerificarVencedor()
         {
-            var vencedor = jogadores[1];
-            foreach(var jogador in jogadores) 
+            Jogadores jogadorVencedor = null;
+            int maiorDiferenca = int.MaxValue;
+            foreach (var jogador in jogadores)
             {
-                if(jogador.PontuacaoComputada <= 21 && jogador.PontuacaoComputada > vencedor.PontuacaoComputada) 
+                if (jogador.PontuacaoComputada <= 21)
                 {
-                    vencedor = jogador;
+                    int diferenca = Math.Abs(21 - jogador.PontuacaoComputada);
+                    if (diferenca < maiorDiferenca)
+                    {
+                        jogadorVencedor = jogador;
+                        maiorDiferenca = diferenca;
+                    }
                 }
             }
-            Console.WriteLine("O vencedor é: " + vencedor.Nome + " com " + vencedor.PontuacaoComputada + " pontos.");
+            if (jogadorVencedor != null)
+            {
+                Console.WriteLine("O vencedor é: " + jogadorVencedor.Nome + " com " + jogadorVencedor.PontuacaoComputada + " pontos.");
+            }
+            else
+            {
+                Console.WriteLine("-------------------------------------------------------------------");
+                Console.WriteLine("Nenhum dos jogadores possui pontuação menor ou igual a 21.");
+            }
         }
     }
 }
-
-
-
 
 
 
